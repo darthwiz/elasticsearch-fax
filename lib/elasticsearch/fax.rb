@@ -24,8 +24,11 @@ module Elasticsearch
     def self.with_ssh_tunnel(gateway_user, gateway_host, local_port, remote_host, remote_port, &block)
       gateway = Net::SSH::Gateway.new(gateway_host, gateway_user)
       gateway.open(remote_host, remote_port, local_port)
-      yield
-      gateway.shutdown!
+      begin
+        yield
+      ensure
+        gateway.shutdown!
+      end
     end
 
     def self.sources
