@@ -1,4 +1,6 @@
 require "elasticsearch/fax/version"
+require 'zlib'
+require 'base64'
 
 module Elasticsearch
   module Fax
@@ -59,6 +61,10 @@ module Elasticsearch
           end
         end
       end
+    end
+
+    def dump(iterable, file = STDOUT)
+      iterable.each { |i| file.puts(Base64.strict_encode64(Zlib.deflate(Marshal.dump(i.to_h)))) }
     end
 
   end
